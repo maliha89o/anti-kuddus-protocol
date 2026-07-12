@@ -83,6 +83,8 @@
         <a href="{% url 'student_list' %}">🎯 Seating Planner</a>
         <a href="{% url 'syllabus_negotiator' %}">🤖 Syllabus AI</a>
         <a href="{% url 'economy_dashboard' %}">💰 Tiffin Ledger</a>
+        <a href="{% url 'trigger_sos' %}">🆘 SOS Alert</a>
+<a href="{% url 'captain_dashboard' %}">📡 Live SOS Feed</a>
         <a href="{% url 'logout' %}">🚪 Logout</a>
     </div>
     <div class="main">
@@ -115,6 +117,16 @@
                 <div class="icon">💰</div>
                 <h3>Tiffin Ledger</h3>
                 <p>Track Kuddus's corrupt economy — cash extortion and stolen food</p>
+            </a>
+             <a href="{% url 'trigger_sos' %}" class="card">
+                <div class="icon">🆘</div>
+                <h3>SOS Rescue Flare</h3>
+                <p>Send an emergency alert to Captains when cornered by Kuddus</p>
+            </a>
+            <a href="{% url 'captain_dashboard' %}" class="card">
+                <div class="icon">📡</div>
+                <h3>Live SOS Feed</h3>
+                <p>Captain view — see and resolve active SOS alerts in real time</p>
             </a>
         </div>
     </div>

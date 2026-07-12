@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captain SOS Dashboard - Anti-Kuddus Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f1e8;
+            color: #1f3a3d;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        h1 { color: #a12222; margin-bottom: 8px; }
+        p.subtitle { color: #666; margin-bottom: 24px; font-size: 14px; }
+        .alert-card {
+            background: #fff;
+            border-left: 5px solid #c0392b;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            animation: flashIn 0.4s ease;
+        }
+        @keyframes flashIn {
+            from { background: #fde2e2; }
+            to { background: #fff; }
+        }
+        .alert-info .location { font-weight: bold; font-size: 16px; color: #a12222; }
+        .alert-info .time { font-size: 12px; color: #999; }
+        .offline-tag {
+            display: inline-block;
+            background: #fff3d6;
+            color: #7a5c00;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-left: 8px;
+        }
+        .resolve-btn {
+            background: #0d7377;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .resolve-btn:hover { background: #0a5c60; }
+        .empty {
+            text-align: center;
+            color: #999;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 Live SOS Dashboard</h1>
+        <p class="subtitle">Auto-refreshes every 3 seconds — Captains, respond immediately</p>
+
+        <div id="alertsContainer">
+            <div class="empty">Loading alerts...</div>
+        </div>
+    </div>
+
+    <script>
+        function getCsrfToken() {
+            const name = 'csrftoken';
+            const cookies = document.cookie.split(';');
+            for (let c of cookies) {
+                c = c.trim();
+                if (c.startsWith(name + '=')) return c.substring(name.length + 1);
+            }
+            return '';
+        }
+
+        async function fetchAlerts() {
+            try {
+                const res = await fetch('/sos/api/active/');
+                const data = await res.json();
+                renderAlerts(data.alerts);
+            } catch (err) {
+                console.error('Failed to fetch alerts', err);
+            }
+        }
+
+        function renderAlerts(alerts) {
+            const container = document.getElementById('alertsContainer');
+            if (alerts.length === 0) {
+                container.innerHTML = '<div class="empty">✅ No active SOS alerts right now.</div>';
+                return;
+            }
+            container.innerHTML = alerts.map(a => `
+                <div class="alert-card">
+                    <div class="alert-info">
+                        <div class="location">📍 ${a.location} ${a.synced_from_offline ? '<span class="offline-tag">synced offline</span>' : ''}</div>
+                        <div class="time">${a.triggered_at}</div>
+                    </div>
+                    <button class="resolve-btn" onclick="resolveAlert(${a.id})">Mark Resolved</button>
+                </div>
+            `).join('');
+        }
+
+        async function resolveAlert(id) {
+            await fetch(`/sos/api/resolve/${id}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCsrfToken() },
+            });
+            fetchAlerts();
+        }
+
+        fetchAlerts();
+        setInterval(fetchAlerts, 3000);
+    </script>
+</body>
+</html>

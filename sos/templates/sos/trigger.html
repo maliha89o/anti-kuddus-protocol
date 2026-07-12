@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS - Anti-Kuddus Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f1e8;
+            color: #1f3a3d;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 420px;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        h1 { color: #a12222; margin-bottom: 8px; }
+        p.subtitle { color: #666; margin-bottom: 24px; font-size: 14px; }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8d0c0;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        .sos-btn {
+            width: 100%;
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 24px;
+            border-radius: 16px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.2s;
+        }
+        .sos-btn:hover { background: #a12222; transform: scale(1.02); }
+        .sos-btn:active { transform: scale(0.98); }
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        .status.show { display: block; }
+        .status.success { background: #dcf5e8; color: #17703c; }
+        .status.offline { background: #fff3d6; color: #7a5c00; }
+        .status.error { background: #fde2e2; color: #a12222; }
+        .network-indicator {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #999;
+        }
+        .network-indicator .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .online .dot { background: #17703c; }
+        .offline-mode .dot { background: #a12222; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🆘 SOS Rescue Flare</h1>
+        <p class="subtitle">Select your location and alert the Captains immediately</p>
+
+        <select id="locationSelect">
+            {% for value, label in location_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+        </select>
+
+        <button class="sos-btn" id="sosBtn" onclick="sendSOS()">🚨 SEND SOS</button>
+
+        <div class="status" id="statusBox"></div>
+
+        <div class="network-indicator" id="networkIndicator">
+            <span class="dot"></span><span id="networkText">Checking connection...</span>
+        </div>
+    </div>
+
+    <script>
+        const QUEUE_KEY = 'sos_offline_queue';
+
+        function getCsrfToken() {
+            const name = 'csrftoken';
+            const cookies = document.cookie.split(';');
+            for (let c of cookies) {
+                c = c.trim();
+                if (c.startsWith(name + '=')) return c.substring(name.length + 1);
+            }
+            return '';
+        }
+
+        function updateNetworkIndicator() {
+            const indicator = document.getElementById('networkIndicator');
+            const text = document.getElementById('networkText');
+            if (navigator.onLine) {
+                indicator.className = 'network-indicator online';
+                text.textContent = 'Online';
+            } else {
+                indicator.className = 'network-indicator offline-mode';
+                text.textContent = 'Offline - alerts will be queued';
+            }
+        }
+
+        function showStatus(message, type) {
+            const box = document.getElementById('statusBox');
+            box.textContent = message;
+            box.className = 'status show ' + type;
+        }
+
+        function getQueue() {
+            const raw = localStorage.getItem(QUEUE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        }
+
+        function saveQueue(queue) {
+            localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+        }
+
+        async function sendToServer(location, syncedFromOffline = false) {
+            const response = await fetch('/sos/api/create/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: JSON.stringify({ location: location, synced_from_offline: syncedFromOffline }),
+            });
+            if (!response.ok) throw new Error('Server error');
+            return response.json();
+        }
+
+        async function sendSOS() {
+            const location = document.getElementById('locationSelect').value;
+
+            if (!navigator.onLine) {
+                // Offline: queue it
+                const queue = getQueue();
+                queue.push({ location: location, timestamp: Date.now() });
+                saveQueue(queue);
+                showStatus('📡 You are offline. Alert queued and will send once reconnected.', 'offline');
+                return;
+            }
+
+            try {
+                await sendToServer(location);
+                showStatus('✅ SOS sent! Captains have been notified.', 'success');
+            } catch (err) {
+                // Network failed even though navigator.onLine said true - queue as fallback
+                const queue = getQueue();
+                queue.push({ location: location, timestamp: Date.now() });
+                saveQueue(queue);
+                showStatus('⚠️ Could not reach server. Alert queued for retry.', 'offline');
+            }
+        }
+
+        async function syncQueue() {
+            const queue = getQueue();
+            if (queue.length === 0) return;
+
+            const remaining = [];
+            for (const item of queue) {
+                try {
+                    await sendToServer(item.location, true);
+                } catch (err) {
+                    remaining.push(item);
+                }
+            }
+            saveQueue(remaining);
+            if (remaining.length === 0 && queue.length > 0) {
+                showStatus('✅ Queued alert(s) synced successfully!', 'success');
+            }
+        }
+
+        window.addEventListener('online', () => {
+            updateNetworkIndicator();
+            syncQueue();
+        });
+        window.addEventListener('offline', updateNetworkIndicator);
+
+        updateNetworkIndicator();
+        syncQueue(); // attempt sync on page load too
+    </script>
+</body>
+</html>
