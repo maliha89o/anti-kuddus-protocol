@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'seating',
     'syllabus_ai',
     'core',
+    'economy',
 ]
 
 MIDDLEWARE = [

@@ -25,6 +25,7 @@ urlpatterns = [
     path('strikes/', include('strikes.urls')),
     path('seating/', include('seating.urls')),
     path('syllabus/', include('syllabus_ai.urls')),
+    path('economy/', include('economy.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Transaction - Anti-Kuddus Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f1e8;
+            color: #1f3a3d;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        h1 { color: #0d7377; margin-bottom: 8px; }
+        p.subtitle { color: #666; margin-bottom: 24px; }
+        label { display: block; margin-top: 16px; margin-bottom: 6px; font-weight: 600; }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8d0c0;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        button {
+            background: #0d7377;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 24px;
+            width: 100%;
+        }
+        button:hover { background: #0a5c60; }
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .success { background: #dcf5e8; color: #17703c; }
+        .error { background: #fde2e2; color: #a12222; }
+        .link-btn {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: #0d7377;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Log a Transaction</h1>
+        <p class="subtitle">Anonymously report cash extortion or stolen tiffin</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <label>Type</label>
+            {{ form.transaction_type }}
+
+            <label>Amount (Taka) — if cash</label>
+            {{ form.amount_taka }}
+
+            <label>Food Item — if food</label>
+            {{ form.food_item }}
+
+            <label>Estimated Calories — if food</label>
+            {{ form.estimated_calories }}
+
+            <button type="submit">Log Transaction</button>
+        </form>
+
+        <a href="{% url 'economy_dashboard' %}" class="link-btn">→ View Economy Dashboard</a>
+    </div>
+</body>
+</html>

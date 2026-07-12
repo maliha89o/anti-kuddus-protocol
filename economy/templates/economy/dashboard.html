@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economy Dashboard - Anti-Kuddus Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f1e8;
+            color: #1f3a3d;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: #0d7377; margin-bottom: 24px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        .stat-card .label { font-size: 13px; color: #666; margin-bottom: 6px; }
+        .stat-card .value { font-size: 28px; font-weight: bold; color: #0d7377; }
+        .weaponry-box {
+            background: #fff3d6;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #e8a800;
+        }
+        .weaponry-box h2 { color: #7a5c00; margin-bottom: 12px; font-size: 17px; }
+        .weaponry-box .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e8d9a8; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background: #0d7377; color: white; }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #0d7377;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Corrupt Economy & Tiffin Ledger</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Total Cash Extorted</div>
+                <div class="value">৳{{ totals.total_cash }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Food Items Stolen</div>
+                <div class="value">{{ totals.food_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Total Calories Consumed</div>
+                <div class="value">{{ totals.total_calories }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Kuddus's Energy Spent</div>
+                <div class="value">{{ totals.kinetic_output }} cal</div>
+            </div>
+        </div>
+
+        <div class="weaponry-box">
+            <h2>⚔️ Projected Weaponry Conversions</h2>
+            <div class="item">
+                <span>🏏 International-standard Cricket Bats</span>
+                <strong>{{ weaponry.cricket_bats }}</strong>
+            </div>
+            <div class="item">
+                <span>🥙 Packets of Premium Jhalmuri</span>
+                <strong>{{ weaponry.jhalmuri_packets }}</strong>
+            </div>
+        </div>
+
+        <h2 style="color: #0d7377; margin-bottom: 12px;">Recent Transactions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Logged At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td>{{ t.get_transaction_type_display }}</td>
+                    <td>
+                        {% if t.transaction_type == 'cash' %}
+                            ৳{{ t.amount_taka }}
+                        {% else %}
+                            {{ t.food_item }} ({{ t.estimated_calories }} cal)
+                        {% endif %}
+                    </td>
+                    <td>{{ t.logged_at|date:"d M Y, H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" style="text-align:center; color:#999;">No transactions logged yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{% url 'log_transaction' %}" class="btn">+ Log New Transaction</a>
+    </div>
+</body>
+</html>
