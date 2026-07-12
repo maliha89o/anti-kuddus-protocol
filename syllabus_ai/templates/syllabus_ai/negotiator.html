@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syllabus Negotiator - Anti-Kuddus Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f1e8;
+            color: #1f3a3d;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        h1 { color: #0d7377; margin-bottom: 8px; }
+        p.subtitle { color: #666; margin-bottom: 24px; }
+        label { display: block; margin-top: 16px; margin-bottom: 6px; font-weight: 600; }
+        textarea, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8d0c0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+        button {
+            background: #0d7377;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+        button:hover { background: #0a5c60; }
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .success { background: #dcf5e8; color: #17703c; }
+        .error { background: #fde2e2; color: #a12222; }
+        .result-box {
+            margin-top: 32px;
+            padding: 20px;
+            background: #e8f4f4;
+            border-radius: 12px;
+            border-left: 4px solid #0d7377;
+        }
+        .result-box h2 { color: #0d7377; margin-bottom: 12px; font-size: 18px; }
+        .result-box pre {
+            white-space: pre-wrap;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .plan-day {
+            background: #fff;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 1px solid #d0e8e8;
+        }
+        .plan-day .day-label { font-weight: bold; color: #0d7377; }
+        .plan-day ul { margin: 8px 0 0 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Syllabus Negotiator</h1>
+        <p class="subtitle">Paste Kuddus's terrifying syllabus and let AI extract the essential topics</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <label>{{ form.raw_text.label }}</label>
+            {{ form.raw_text }}
+
+            <label>{{ form.days_remaining.label }}</label>
+            {{ form.days_remaining }}
+
+            <button type="submit">🔍 Filter & Generate Study Plan</button>
+        </form>
+
+        {% if result %}
+        <div class="result-box">
+            <h2>✅ Filtered Examinable Topics</h2>
+            <pre>{{ result }}</pre>
+        </div>
+        {% endif %}
+
+        {% if study_plan and not study_plan.error %}
+        <div class="result-box">
+            <h2>📅 Study Plan ({{ study_plan.total_days }} days)</h2>
+            {% for day in study_plan.schedule %}
+                <div class="plan-day">
+                    <span class="day-label">Day {{ day.day }}:</span> {{ day.focus }}
+                    <ul>
+                        {% for topic in day.topics %}
+                            <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+        {% elif study_plan.error %}
+        <div class="result-box">
+            <h2>⚠️ Could Not Generate Study Plan</h2>
+            <pre>{{ study_plan.raw }}</pre>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

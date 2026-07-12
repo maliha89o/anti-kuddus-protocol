@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -89,10 +89,10 @@
             </tbody>
         </table>
         {% else %}
-            <p class="empty">Kono student add kora nai. Age admin panel theke student add koro.</p>
+            <p class="empty">No students added yet. Please add students from the admin panel first.</p>
         {% endif %}
 
-        <a href="{% url 'generate_seating' %}" class="btn">🎯 Seating Plan Generate Koro</a>
+        <a href="{% url 'generate_seating' %}" class="btn">🎯 Generate Seating Plan</a>
     </div>
 </body>
 </html>

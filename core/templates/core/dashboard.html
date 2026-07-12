@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Anti-Kuddus Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f1e8;
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 220px;
+            background: #0d7377;
+            color: white;
+            padding: 24px 0;
+            flex-shrink: 0;
+        }
+        .sidebar h2 {
+            padding: 0 20px 20px;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 12px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .sidebar a:hover { background: rgba(255,255,255,0.1); }
+        .main {
+            flex: 1;
+            padding: 32px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .topbar h1 { color: #0d7377; font-size: 24px; }
+        .logout-btn {
+            background: white;
+            color: #a12222;
+            border: 1px solid #a12222;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            text-decoration: none;
+            color: #1f3a3d;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-4px); }
+        .card .icon { font-size: 32px; margin-bottom: 12px; }
+        .card h3 { color: #0d7377; margin-bottom: 8px; font-size: 17px; }
+        .card p { font-size: 13px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🛡️ Anti-Kuddus</h2>
+        <a href="{% url 'dashboard_home' %}">🏠 Dashboard</a>
+        <a href="{% url 'roll_login' %}">📢 Strike Portal</a>
+        <a href="{% url 'strikes_dashboard' %}">⚖️ Impeachment Tracker</a>
+        <a href="{% url 'student_list' %}">🎯 Seating Planner</a>
+        <a href="{% url 'syllabus_negotiator' %}">🤖 Syllabus AI</a>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
+    </div>
+    <div class="main">
+        <div class="topbar">
+            <h1>Welcome, {{ user.username }}!</h1>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </div>
+        <div class="cards">
+            <a href="{% url 'roll_login' %}" class="card">
+                <div class="icon">📢</div>
+                <h3>Strike Portal</h3>
+                <p>Report against Kuddus anonymously</p>
+            </a>
+            <a href="{% url 'strikes_dashboard' %}" class="card">
+                <div class="icon">⚖️</div>
+                <h3>Impeachment Tracker</h3>
+                <p>Track warnings progress — 3/3 means impeachment!</p>
+            </a>
+            <a href="{% url 'student_list' %}" class="card">
+                <div class="icon">🎯</div>
+                <h3>Seating Planner</h3>
+                <p>Line-of-sight optimized classroom seating</p>
+            </a>
+            <a href="{% url 'syllabus_negotiator' %}" class="card">
+                <div class="icon">🤖</div>
+                <h3>Syllabus Negotiator</h3>
+                <p>Use AI to filter syllabus and generate a study plan</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

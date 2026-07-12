@@ -8,12 +8,12 @@
     </div>
     <p style="color: #666; margin-top: 8px;">
         {% if strikes_remaining > 0 %}
-            Aro {{ strikes_remaining }} ti strike hole Kuddus impeach hobe!
+            {{ strikes_remaining }} more strike(s) until Kuddus is impeached!
         {% else %}
-            🎉 Kuddus impeached! Section B mukto hoyeche.
+            🎉 Kuddus has been impeached! Section B is free.
         {% endif %}
     </p>
     <a href="{% url 'submit_complaint' %}">
-        <button style="margin-top: 20px;">Aro Complaint Koro</button>
+        <button style="margin-top: 20px;">File Another Complaint</button>
     </a>
 {% endblock %}

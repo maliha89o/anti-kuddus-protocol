@@ -1,15 +1,15 @@
 {% extends 'strikes/base.html' %}
-{% block title %}Complaint Submit Koro{% endblock %}
+{% block title %}Submit Complaint{% endblock %}
 {% block content %}
-    <h1>📢 Kuddus er Biruddhe Complaint</h1>
+    <h1>📢 File a Complaint Against Kuddus</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label>Category</label>
         {{ form.category }}
-        <label>Bistarito Bornona</label>
+        <label>Detailed Description</label>
         {{ form.description }}
         <label>Proof (optional)</label>
         {{ form.evidence_image }}
-        <button type="submit">Complaint Jomaw</button>
+        <button type="submit">Submit Complaint</button>
     </form>
 {% endblock %}

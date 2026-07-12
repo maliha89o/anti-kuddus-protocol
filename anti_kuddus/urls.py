@@ -21,8 +21,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('core.urls')),
     path('strikes/', include('strikes.urls')),
     path('seating/', include('seating.urls')),
+    path('syllabus/', include('syllabus_ai.urls')),
 ]
 
 if settings.DEBUG:

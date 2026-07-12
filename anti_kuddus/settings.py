@@ -18,6 +18,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
+LLM_API_KEY = os.getenv('LLM_API_KEY')
+
 ALLOWED_HOSTS = []
 
 
@@ -33,6 +35,8 @@ INSTALLED_APPS = [
     'accounts',
     'strikes',
     'seating',
+    'syllabus_ai',
+    'core',
 ]
 
 MIDDLEWARE = [

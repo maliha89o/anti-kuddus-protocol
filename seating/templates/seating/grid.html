@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,10 +79,10 @@
         {% if sight_result %}
             <div class="sight-result {% if sight_result.blocked %}blocked{% else %}clear{% endif %}">
                 {% if sight_result.blocked %}
-                    ⚠️ Line of sight BLOCKED! Kuddus ke dekha jacche na — blocking students:
+                    ⚠️ Line of sight BLOCKED! Kuddus cannot be seen — blocking students:
                     {% for s in sight_result.blocking_students %}{{ s.name }} ({{ s.height_cm }}cm){% if not forloop.last %}, {% endif %}{% endfor %}
                 {% else %}
-                    ✅ Teacher er clear view ache Kuddus er desk porjonto!
+                    ✅ Teacher has a clear view of Kuddus's desk!
                 {% endif %}
             </div>
         {% endif %}
@@ -106,7 +106,7 @@
             {% endfor %}
         </div>
 
-        <a href="{% url 'student_list' %}" class="btn">← Student List e ferot jao</a>
+        <a href="{% url 'student_list' %}" class="btn">← Back to Student List</a>
     </div>
 </body>
 </html>
