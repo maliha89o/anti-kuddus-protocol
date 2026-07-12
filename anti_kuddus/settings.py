@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'core',
     'economy',
     'sos',
+    'factcheck',
 ]
 
 MIDDLEWARE = [

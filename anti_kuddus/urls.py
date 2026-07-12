@@ -27,6 +27,7 @@ urlpatterns = [
     path('syllabus/', include('syllabus_ai.urls')),
     path('economy/', include('economy.urls')),
     path('sos/', include('sos.urls')),
+    path('factcheck/', include('factcheck.urls')),
 ]
 
 if settings.DEBUG:
