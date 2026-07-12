@@ -1,0 +1,11 @@
+{% extends 'strikes/base.html' %}
+{% block title %}Roll Number Verify{% endblock %}
+{% block content %}
+    <h1>🛡️ Anti-Kuddus Protocol</h1>
+    <p style="margin-bottom: 20px; color: #666;">Tomar Roll Number diye verify koro</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.roll_number }}
+        <button type="submit">Verify Koro</button>
+    </form>
+{% endblock %}

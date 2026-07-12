@@ -1,0 +1,19 @@
+{% extends 'strikes/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+    <h1>⚖️ Impeachment Tracker</h1>
+    <p style="margin-bottom: 8px;">Warnings: {{ total_strikes }}/3</p>
+    <div class="progress-bar-outer">
+        <div class="progress-bar-inner" style="width: {{ progress_percent }}%;"></div>
+    </div>
+    <p style="color: #666; margin-top: 8px;">
+        {% if strikes_remaining > 0 %}
+            Aro {{ strikes_remaining }} ti strike hole Kuddus impeach hobe!
+        {% else %}
+            🎉 Kuddus impeached! Section B mukto hoyeche.
+        {% endif %}
+    </p>
+    <a href="{% url 'submit_complaint' %}">
+        <button style="margin-top: 20px;">Aro Complaint Koro</button>
+    </a>
+{% endblock %}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List - Seating Planner</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f1e8;
+            color: #1f3a3d;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        h1 { color: #0d7377; margin-bottom: 20px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th { background: #0d7377; color: white; }
+        tr:hover { background: #f5f1e8; }
+        .badge {
+            background: #ffe4a1;
+            color: #7a5c00;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #0d7377;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        .btn:hover { background: #0a5c60; }
+        .empty { color: #999; padding: 20px 0; }
+        .messages { margin-bottom: 16px; }
+        .message { background: #fde2e2; color: #a12222; padding: 10px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👥 Student List</h1>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if students %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll</th>
+                    <th>Height (cm)</th>
+                    <th>Front Row Needed?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.roll }}</td>
+                    <td>{{ student.height_cm }}</td>
+                    <td>{% if student.needs_front_row %}<span class="badge">Yes</span>{% else %}No{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty">Kono student add kora nai. Age admin panel theke student add koro.</p>
+        {% endif %}
+
+        <a href="{% url 'generate_seating' %}" class="btn">🎯 Seating Plan Generate Koro</a>
+    </div>
+</body>
+</html>
